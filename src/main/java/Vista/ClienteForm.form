@@ -85,6 +85,12 @@
               <text value="Limpiar"/>
             </properties>
           </component>
+          <component id="v1w2x" class="javax.swing.JButton" binding="volverButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <text value="Volver"/>
+            </properties>
+          </component>
         </children>
       </grid>
       <hspacer id="e1f2g">

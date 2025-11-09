@@ -1,5 +1,7 @@
 package Vista;
 
+
+
 import Controlador.AdministradorController;
 import Datos.*;
 import Dominio.Administrador;
@@ -8,6 +10,7 @@ import Servicio.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
@@ -25,10 +28,14 @@ public class UsuarioForm extends JFrame {
     private JButton buscarButton;
     private JButton listarButton;
     private JButton limpiarButton;
+    private JButton volverButton;
     private DefaultTableModel tableModel;
     private AdministradorController controller;
 
+    // 🔹 Constructor principal
     public UsuarioForm() {
+        initComponents(); // ✅ Inicializa todos los componentes
+
         setContentPane(mainPanel);
         setTitle("Gestión de Usuarios/Clientes");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -39,6 +46,57 @@ public class UsuarioForm extends JFrame {
         inicializarTabla();
         configurarEventos();
         listarUsuarios();
+    }
+
+    // 🔹 Crea los componentes Swing (si no usás diseñador)
+    private void initComponents() {
+        mainPanel = new JPanel(new BorderLayout(10, 10));
+
+        // Campos de texto
+        idTextField = new JTextField(10);
+        nombreTextField = new JTextField(15);
+        dniTextField = new JTextField(10);
+        telefonoTextField = new JTextField(10);
+
+        // Botones
+        agregarButton = new JButton("Agregar");
+        modificarButton = new JButton("Modificar");
+        eliminarButton = new JButton("Eliminar");
+        buscarButton = new JButton("Buscar");
+        listarButton = new JButton("Listar");
+        limpiarButton = new JButton("Limpiar");
+        volverButton = new JButton("Volver");
+
+        // Tabla
+        usuariosTable = new JTable();
+        JScrollPane scrollPane = new JScrollPane(usuariosTable);
+
+        // Panel superior (formulario)
+        JPanel formPanel = new JPanel(new GridLayout(4, 4, 10, 10));
+        formPanel.add(new JLabel("ID:"));
+        formPanel.add(idTextField);
+        formPanel.add(buscarButton);
+        formPanel.add(new JLabel(""));
+        formPanel.add(new JLabel("Nombre:"));
+        formPanel.add(nombreTextField);
+        formPanel.add(new JLabel("DNI:"));
+        formPanel.add(dniTextField);
+        formPanel.add(new JLabel("Teléfono:"));
+        formPanel.add(telefonoTextField);
+
+        // Panel de botones
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(agregarButton);
+        buttonPanel.add(modificarButton);
+        buttonPanel.add(eliminarButton);
+        buttonPanel.add(listarButton);
+        buttonPanel.add(limpiarButton);
+        buttonPanel.add(volverButton);
+
+        // Agregamos todo al panel principal
+        mainPanel.add(formPanel, BorderLayout.NORTH);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
     }
 
     private void inicializarController() {
@@ -70,6 +128,7 @@ public class UsuarioForm extends JFrame {
         buscarButton.addActionListener(e -> buscarButtonActionPerformed());
         listarButton.addActionListener(e -> listarUsuarios());
         limpiarButton.addActionListener(e -> limpiarCampos());
+        volverButton.addActionListener(e -> dispose());
 
         usuariosTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -200,5 +259,10 @@ public class UsuarioForm extends JFrame {
         nombreTextField.setText("");
         dniTextField.setText("");
         telefonoTextField.setText("");
+    }
+
+    // 🔹 Para probar este formulario directamente:
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new UsuarioForm().setVisible(true));
     }
 }

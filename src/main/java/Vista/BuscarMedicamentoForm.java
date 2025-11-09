@@ -15,10 +15,14 @@ public class BuscarMedicamentoForm extends JFrame {
     private JTable medicamentosTable;
     private JTextField nombreTextField;
     private JButton buscarButton;
+    private JButton volverButton;
     private DefaultTableModel tableModel;
     private EmpleadoController controller;
 
     public BuscarMedicamentoForm() {
+        if (mainPanel == null) {
+            mainPanel = new JPanel();
+        }
         setContentPane(mainPanel);
         setTitle("Buscar Medicamento");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -27,8 +31,19 @@ public class BuscarMedicamentoForm extends JFrame {
 
         inicializarController();
         inicializarTabla();
-        buscarButton.addActionListener(this::buscarButtonActionPerformed);
-        nombreTextField.addActionListener(e -> buscarButton.doClick());
+        if (buscarButton != null) {
+            buscarButton.addActionListener(this::buscarButtonActionPerformed);
+        }
+        if (nombreTextField != null) {
+            nombreTextField.addActionListener(e -> {
+                if (buscarButton != null) {
+                    buscarButton.doClick();
+                }
+            });
+        }
+        if (volverButton != null) {
+            volverButton.addActionListener(e -> dispose());
+        }
     }
 
     private void inicializarController() {

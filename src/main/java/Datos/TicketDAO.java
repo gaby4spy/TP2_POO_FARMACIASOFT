@@ -10,26 +10,46 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+public class TicketDAO implements ITicketDAO {
 
-public class TicketDAO implements  ITicketDAO{
     @Override
     public List<Ticket> generarTicket(Venta venta) {
         List<Ticket> ticketDetalles = new ArrayList<>();
-        String sql = """
-            SELECT v.total, dv.cantidad, m.nombre AS nombreMedicamento,
-                   m.precio, c.nombre AS nombreCliente, c.dni
-            FROM venta v
-            INNER JOIN detalleventa dv ON v.idVenta = dv.idVenta
-            INNER JOIN lotemedicamento l ON dv.idLote = l.idCompra
-            INNER JOIN medicamento m ON m.idMedicamento = l.idMedicamento
-            INNER JOIN cliente c ON c.idCliente = v.idCliente
-            WHERE v.idVenta = ?
-        """;
+
+        // Si no hay venta o no tiene id, buscamos la última venta registrada
+        String sql;
+        boolean tieneId = (venta != null && venta.getIdVenta() > 0);
+
+        if (tieneId) {
+            sql = """
+                SELECT v.total, dv.cantidad, m.nombre AS nombreMedicamento,
+                       m.precio, c.nombre AS nombreCliente, c.dni
+                FROM venta v
+                INNER JOIN detalleventa dv ON v.idVenta = dv.idVenta
+                INNER JOIN lotemedicamento l ON dv.idLote = l.idCompra
+                INNER JOIN medicamento m ON m.idMedicamento = l.idMedicamento
+                INNER JOIN cliente c ON c.idCliente = v.idCliente
+                WHERE v.idVenta = ?
+            """;
+        } else {
+            sql = """
+                SELECT v.total, dv.cantidad, m.nombre AS nombreMedicamento,
+                       m.precio, c.nombre AS nombreCliente, c.dni
+                FROM venta v
+                INNER JOIN detalleventa dv ON v.idVenta = dv.idVenta
+                INNER JOIN lotemedicamento l ON dv.idLote = l.idCompra
+                INNER JOIN medicamento m ON m.idMedicamento = l.idMedicamento
+                INNER JOIN cliente c ON c.idCliente = v.idCliente
+                WHERE v.idVenta = (SELECT MAX(idVenta) FROM venta)
+            """;
+        }
 
         try (Connection con = Conexion.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setInt(1, venta.getIdVenta());
+            if (tieneId) {
+                ps.setInt(1, venta.getIdVenta());
+            }
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -40,7 +60,6 @@ public class TicketDAO implements  ITicketDAO{
                     detalle.setNombreCliente(rs.getString("nombreCliente"));
                     detalle.setDni(rs.getInt("dni"));
                     detalle.setCantidad(rs.getInt("cantidad"));
-
                     ticketDetalles.add(detalle);
                 }
             }

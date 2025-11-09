@@ -15,10 +15,15 @@ public class ClienteForm extends JFrame {
     private JTextField telefonoTextField;
     private JButton registrarButton;
     private JButton limpiarButton;
+    private JButton volverButton;
+    @SuppressWarnings("unused") // Campo definido en el .form
     private JLabel tituloLabel;
     private EmpleadoController controller;
 
     public ClienteForm() {
+        if (mainPanel == null) {
+            mainPanel = new JPanel();
+        }
         setContentPane(mainPanel);
         setTitle("Registrar Cliente");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -26,8 +31,15 @@ public class ClienteForm extends JFrame {
         setLocationRelativeTo(null);
 
         inicializarController();
-        registrarButton.addActionListener(this::registrarButtonActionPerformed);
-        limpiarButton.addActionListener(this::limpiarButtonActionPerformed);
+        if (registrarButton != null) {
+            registrarButton.addActionListener(this::registrarButtonActionPerformed);
+        }
+        if (limpiarButton != null) {
+            limpiarButton.addActionListener(this::limpiarButtonActionPerformed);
+        }
+        if (volverButton != null) {
+            volverButton.addActionListener(e -> dispose());
+        }
     }
 
     private void inicializarController() {

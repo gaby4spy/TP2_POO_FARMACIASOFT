@@ -26,10 +26,14 @@ public class ProveedorForm extends JFrame {
     private JButton buscarButton;
     private JButton listarButton;
     private JButton limpiarButton;
+    private JButton volverButton;
     private DefaultTableModel tableModel;
     private AdministradorController controller;
 
     public ProveedorForm() {
+        if (mainPanel == null) {
+            mainPanel = new JPanel();
+        }
         setContentPane(mainPanel);
         setTitle("Gestión de Proveedores");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -65,12 +69,27 @@ public class ProveedorForm extends JFrame {
     }
 
     private void configurarEventos() {
-        agregarButton.addActionListener(e -> agregarButtonActionPerformed());
-        modificarButton.addActionListener(e -> modificarButtonActionPerformed());
-        eliminarButton.addActionListener(e -> eliminarButtonActionPerformed());
-        buscarButton.addActionListener(e -> buscarButtonActionPerformed());
-        listarButton.addActionListener(e -> listarProveedores());
-        limpiarButton.addActionListener(e -> limpiarCampos());
+        if (agregarButton != null) {
+            agregarButton.addActionListener(e -> agregarButtonActionPerformed());
+        }
+        if (modificarButton != null) {
+            modificarButton.addActionListener(e -> modificarButtonActionPerformed());
+        }
+        if (eliminarButton != null) {
+            eliminarButton.addActionListener(e -> eliminarButtonActionPerformed());
+        }
+        if (buscarButton != null) {
+            buscarButton.addActionListener(e -> buscarButtonActionPerformed());
+        }
+        if (listarButton != null) {
+            listarButton.addActionListener(e -> listarProveedores());
+        }
+        if (limpiarButton != null) {
+            limpiarButton.addActionListener(e -> limpiarCampos());
+        }
+        if (volverButton != null) {
+            volverButton.addActionListener(e -> dispose());
+        }
 
         proveedoresTable.addMouseListener(new MouseAdapter() {
             @Override

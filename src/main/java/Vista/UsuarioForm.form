@@ -122,6 +122,12 @@
                   <text value="Limpiar"/>
                 </properties>
               </component>
+              <component id="v5w6x" class="javax.swing.JButton" binding="volverButton" default-binding="true">
+                <constraints/>
+                <properties>
+                  <text value="Volver"/>
+                </properties>
+              </component>
             </children>
           </grid>
         </children>

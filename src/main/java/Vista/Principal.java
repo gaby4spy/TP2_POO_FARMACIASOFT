@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 public class Principal extends JFrame {
     private JPanel principal;
     private JButton administradorButton;
+    // empleadoButton está definido en el .form pero no se usa actualmente
+    @SuppressWarnings("unused")
     private JButton empleadoButton;
 
     public Principal() {

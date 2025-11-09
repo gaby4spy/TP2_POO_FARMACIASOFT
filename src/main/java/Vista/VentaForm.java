@@ -7,7 +7,6 @@ import Servicio.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,6 +21,7 @@ public class VentaForm extends JFrame {
     private JButton agregarCarritoButton;
     private JButton finalizarVentaButton;
     private JButton limpiarCarritoButton;
+    private JButton volverButton;
     private JLabel totalLabel;
     private DefaultTableModel medicamentosTableModel;
     private DefaultTableModel carritoTableModel;
@@ -30,6 +30,9 @@ public class VentaForm extends JFrame {
     private int idEmpleado = 1;
 
     public VentaForm() {
+        if (mainPanel == null) {
+            mainPanel = new JPanel();
+        }
         setContentPane(mainPanel);
         setTitle("Registrar Venta");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -74,10 +77,21 @@ public class VentaForm extends JFrame {
     }
 
     private void configurarEventos() {
-        buscarMedicamentoButton.addActionListener(e -> buscarMedicamentos());
-        agregarCarritoButton.addActionListener(e -> agregarAlCarrito());
-        finalizarVentaButton.addActionListener(e -> finalizarVenta());
-        limpiarCarritoButton.addActionListener(e -> limpiarCarrito());
+        if (buscarMedicamentoButton != null) {
+            buscarMedicamentoButton.addActionListener(e -> buscarMedicamentos());
+        }
+        if (agregarCarritoButton != null) {
+            agregarCarritoButton.addActionListener(e -> agregarAlCarrito());
+        }
+        if (finalizarVentaButton != null) {
+            finalizarVentaButton.addActionListener(e -> finalizarVenta());
+        }
+        if (limpiarCarritoButton != null) {
+            limpiarCarritoButton.addActionListener(e -> limpiarCarrito());
+        }
+        if (volverButton != null) {
+            volverButton.addActionListener(e -> dispose());
+        }
     }
 
     private void buscarMedicamentos() {
@@ -165,7 +179,6 @@ public class VentaForm extends JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
-
     private void finalizarVenta() {
         if (carritoTableModel.getRowCount() == 0) {
             JOptionPane.showMessageDialog(this,
@@ -178,46 +191,62 @@ public class VentaForm extends JFrame {
         try {
             int idCliente = Integer.parseInt(idClienteTextField.getText().trim());
 
+            // 1️⃣ Crear venta
             Venta venta = new Venta(idEmpleado, idCliente, totalVenta);
-            
-            DetalleVenta detalleVenta = null;
-            if (carritoTableModel.getRowCount() > 0) {
-                int cantidad = (Integer) carritoTableModel.getValueAt(0, 2);
-                float precioUnitario = (Float) carritoTableModel.getValueAt(0, 3);
-                float total = (Float) carritoTableModel.getValueAt(0, 4);
-                
-                int idLote = 1;
-                
-                detalleVenta = new DetalleVenta(0, idLote, cantidad, precioUnitario, total, LocalDateTime.now());
-            }
 
-            boolean exito = controller.registrarVenta(venta, detalleVenta);
+            // 2️⃣ Registrar la venta primero
+            boolean exitoVenta = controller.registrarVenta(venta);
 
-            if (exito) {
-                int idVenta = obtenerUltimoIdVenta();
-                venta.setIdVenta(idVenta);
-
-                int opcion = JOptionPane.showConfirmDialog(this,
-                        "Venta registrada correctamente. ¿Desea generar el ticket?",
-                        "Confirmar",
-                        JOptionPane.YES_NO_OPTION);
-
-                if (opcion == JOptionPane.YES_OPTION) {
-                    List<Ticket> tickets = controller.generarTicket(venta);
-                    TicketForm ticketForm = new TicketForm(tickets);
-                    ticketForm.setVisible(true);
-                }
-
-                limpiarCarrito();
-                idClienteTextField.setText("");
-                buscarMedicamentoTextField.setText("");
-                medicamentosTableModel.setRowCount(0);
-            } else {
+            if (!exitoVenta) {
                 JOptionPane.showMessageDialog(this,
                         "Error al registrar la venta",
                         "Error",
                         JOptionPane.ERROR_MESSAGE);
+                return;
             }
+
+            // 3️⃣ Obtener el último idVenta
+            int idVenta = controller.obtenerUltimoIdVenta();
+            venta.setIdVenta(idVenta);
+
+            // 4️⃣ Registrar los detalles
+            for (int i = 0; i < carritoTableModel.getRowCount(); i++) {
+                int idMedicamento = (Integer) carritoTableModel.getValueAt(i, 0);
+                int cantidad = (Integer) carritoTableModel.getValueAt(i, 2);
+                float precioUnitario = (Float) carritoTableModel.getValueAt(i, 3);
+                float subtotal = (Float) carritoTableModel.getValueAt(i, 4);
+
+                int idLote = 1; // temporal
+
+                DetalleVenta detalle = new DetalleVenta(
+                        idVenta,
+                        idLote,
+                        cantidad,
+                        precioUnitario,
+                        subtotal,
+                        java.time.LocalDateTime.now()
+                );
+
+                controller.registrarDetalle(detalle);
+            }
+
+            // 5️⃣ Mostrar ticket
+            int opcion = JOptionPane.showConfirmDialog(this,
+                    "Venta registrada correctamente. ¿Desea generar el ticket?",
+                    "Confirmar",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (opcion == JOptionPane.YES_OPTION) {
+                List<Ticket> tickets = controller.generarTicket(venta);
+                TicketForm ticketForm = new TicketForm(tickets);
+                ticketForm.setVisible(true);
+            }
+
+            // 6️⃣ Limpiar
+            limpiarCarrito();
+            idClienteTextField.setText("");
+            buscarMedicamentoTextField.setText("");
+            medicamentosTableModel.setRowCount(0);
 
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this,
@@ -226,6 +255,7 @@ public class VentaForm extends JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
+
 
     private int obtenerUltimoIdVenta() {
         try {

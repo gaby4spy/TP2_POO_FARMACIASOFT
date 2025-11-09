@@ -5,6 +5,8 @@ import Servicio.EmpleadoService;
 
 import java.util.List;
 
+
+
 public class EmpleadoController {
     private EmpleadoService empleadoService;
 
@@ -12,22 +14,33 @@ public class EmpleadoController {
         this.empleadoService = empleadoService;
     }
 
-    public List<Medicamento> buscarMedicamentoPorNombre(Medicamento medicamento){
+    public List<Medicamento> buscarMedicamentoPorNombre(Medicamento medicamento) {
         return empleadoService.buscarMedicamentoPorNombre(medicamento);
     }
 
-    public boolean agregarCliente (Cliente cliente){
+    public boolean agregarCliente(Cliente cliente) {
         return empleadoService.agregarCliente(cliente);
     }
 
-    public boolean registrarVenta(Venta venta, DetalleVenta detalleVenta){
-        return empleadoService.registrarVenta(venta,detalleVenta);
+    // 🔹 Registrar venta sola
+    public boolean registrarVenta(Venta venta) {
+        return empleadoService.registrarVenta(venta);
+    }
+
+    // 🔹 Registrar detalle después
+
+
+    public List<Ticket> generarTicket(Venta venta) {
+        return empleadoService.generarTicket(venta);
     }
 
 
-    public List<Ticket> generarTicket(Venta venta){
-        return empleadoService.generarTicket(venta);
-    };
+    public boolean registrarDetalle(DetalleVenta detalleVenta) {
+        return empleadoService.registrarDetalle(detalleVenta);
+    }
 
+    public int obtenerUltimoIdVenta() {
+        return empleadoService.obtenerUltimoIdVenta();
+    }
 
 }

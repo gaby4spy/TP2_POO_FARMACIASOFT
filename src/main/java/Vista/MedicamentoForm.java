@@ -13,6 +13,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+
+
+
 public class MedicamentoForm extends JFrame {
     private JPanel mainPanel;
     private JTable medicamentosTable;
@@ -27,10 +30,15 @@ public class MedicamentoForm extends JFrame {
     private JButton buscarButton;
     private JButton listarButton;
     private JButton limpiarButton;
+    private JButton volverButton;
+
     private DefaultTableModel tableModel;
     private AdministradorController controller;
 
     public MedicamentoForm() {
+        if (mainPanel == null) {
+            mainPanel = new JPanel();
+        }
         setContentPane(mainPanel);
         setTitle("Gestión de Medicamentos");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -45,11 +53,7 @@ public class MedicamentoForm extends JFrame {
 
     private void inicializarController() {
         MedicamentoService medicamentoService = new MedicamentoService(new MedicamentoDAO());
-        AdministradorService adminService = new AdministradorService(
-                medicamentoService,
-                null,
-                null
-        );
+        AdministradorService adminService = new AdministradorService(medicamentoService, null, null);
         controller = new AdministradorController(adminService);
     }
 
@@ -66,12 +70,13 @@ public class MedicamentoForm extends JFrame {
     }
 
     private void configurarEventos() {
-        agregarButton.addActionListener(e -> agregarButtonActionPerformed());
-        modificarButton.addActionListener(e -> modificarButtonActionPerformed());
-        eliminarButton.addActionListener(e -> eliminarButtonActionPerformed());
-        buscarButton.addActionListener(e -> buscarButtonActionPerformed());
+        agregarButton.addActionListener(e -> agregarMedicamento());
+        modificarButton.addActionListener(e -> modificarMedicamento());
+        eliminarButton.addActionListener(e -> eliminarMedicamento());
+        buscarButton.addActionListener(e -> buscarMedicamento());
         listarButton.addActionListener(e -> listarMedicamentos());
         limpiarButton.addActionListener(e -> limpiarCampos());
+        volverButton.addActionListener(e -> dispose());
 
         medicamentosTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -88,7 +93,7 @@ public class MedicamentoForm extends JFrame {
         });
     }
 
-    private void agregarButtonActionPerformed() {
+    private void agregarMedicamento() {
         try {
             int id = Integer.parseInt(idTextField.getText().trim());
             String nombre = nombreTextField.getText().trim();
@@ -102,41 +107,29 @@ public class MedicamentoForm extends JFrame {
             limpiarCampos();
             listarMedicamentos();
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Por favor, ingrese valores numéricos válidos",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Por favor, ingrese valores válidos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void modificarButtonActionPerformed() {
+    private void modificarMedicamento() {
         try {
             int id = Integer.parseInt(idTextField.getText().trim());
             int nuevoStock = Integer.parseInt(stockTextField.getText().trim());
-
             Medicamento medicamento = new Medicamento(id);
             controller.modificarMedicamento(new Administrador(), medicamento, nuevoStock);
             JOptionPane.showMessageDialog(this, "Stock modificado correctamente");
             limpiarCampos();
             listarMedicamentos();
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Por favor, ingrese valores numéricos válidos",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ingrese valores numéricos válidos.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void eliminarButtonActionPerformed() {
+    private void eliminarMedicamento() {
         try {
             int id = Integer.parseInt(idTextField.getText().trim());
-            int confirmacion = JOptionPane.showConfirmDialog(
-                    this,
-                    "¿Está seguro de eliminar este medicamento?",
-                    "Confirmar",
-                    JOptionPane.YES_NO_OPTION
-            );
-            if (confirmacion == JOptionPane.YES_OPTION) {
+            int confirm = JOptionPane.showConfirmDialog(this, "¿Seguro desea eliminar este medicamento?", "Confirmar", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
                 Medicamento medicamento = new Medicamento(id);
                 controller.eliminarMedicamento(new Administrador(), medicamento);
                 JOptionPane.showMessageDialog(this, "Medicamento eliminado correctamente");
@@ -144,32 +137,21 @@ public class MedicamentoForm extends JFrame {
                 listarMedicamentos();
             }
         } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this,
-                    "Por favor, ingrese un ID válido",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ingrese un ID válido.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    private void buscarButtonActionPerformed() {
+    private void buscarMedicamento() {
         String nombre = nombreTextField.getText().trim();
         if (nombre.isEmpty()) {
-            JOptionPane.showMessageDialog(this,
-                    "Por favor, ingrese un nombre para buscar",
-                    "Error",
-                    JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Ingrese un nombre para buscar.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        Medicamento filtro = new Medicamento(nombre);
-        controller.buscarMedicamentoPorNombre(filtro);
-        mostrarResultadosBusqueda(filtro);
-    }
 
-    private void listarMedicamentos() {
+        Medicamento filtro = new Medicamento(nombre);
+        List<Medicamento> resultados = new MedicamentoService(new MedicamentoDAO()).buscarMedicamentoPorNombre(filtro);
         tableModel.setRowCount(0);
-        MedicamentoService medicamentoService = new MedicamentoService(new MedicamentoDAO());
-        List<Medicamento> medicamentos = medicamentoService.listarMedicamentos();
-        for (Medicamento m : medicamentos) {
+        for (Medicamento m : resultados) {
             tableModel.addRow(new Object[]{
                     m.getIdMedicamento(),
                     m.getNombre(),
@@ -180,10 +162,9 @@ public class MedicamentoForm extends JFrame {
         }
     }
 
-    private void mostrarResultadosBusqueda(Medicamento filtro) {
+    private void listarMedicamentos() {
         tableModel.setRowCount(0);
-        MedicamentoService medicamentoService = new MedicamentoService(new MedicamentoDAO());
-        List<Medicamento> medicamentos = medicamentoService.buscarMedicamentoPorNombre(filtro);
+        List<Medicamento> medicamentos = new MedicamentoService(new MedicamentoDAO()).listarMedicamentos();
         for (Medicamento m : medicamentos) {
             tableModel.addRow(new Object[]{
                     m.getIdMedicamento(),

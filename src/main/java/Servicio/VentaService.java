@@ -14,4 +14,10 @@ public class VentaService {
 
         return ventaDAO.registrarVenta(venta);
     };
+
+    public int obtenerUltimoIdVenta() {
+        return 0;
+    }
+
+
 }

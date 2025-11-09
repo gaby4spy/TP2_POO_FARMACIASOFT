@@ -12,9 +12,13 @@ public class ReportesForm extends JFrame {
     private JTable reporteTable;
     private JComboBox<String> tipoReporteCombo;
     private JButton generarButton;
+    private JButton volverButton;
     private DefaultTableModel tableModel;
 
     public ReportesForm() {
+        if (mainPanel == null) {
+            mainPanel = new JPanel();
+        }
         setContentPane(mainPanel);
         setTitle("Generar Reportes");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -22,7 +26,12 @@ public class ReportesForm extends JFrame {
         setLocationRelativeTo(null);
 
         inicializarTabla();
-        generarButton.addActionListener(this::generarButtonActionPerformed);
+        if (generarButton != null) {
+            generarButton.addActionListener(this::generarButtonActionPerformed);
+        }
+        if (volverButton != null) {
+            volverButton.addActionListener(e -> dispose());
+        }
     }
 
     private void inicializarTabla() {

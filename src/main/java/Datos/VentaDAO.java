@@ -5,7 +5,7 @@ import Dominio.Venta;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.Timestamp;
+import java.sql.ResultSet;
 
 public class VentaDAO implements IVentaDAO {
 
@@ -28,4 +28,25 @@ public class VentaDAO implements IVentaDAO {
         }
         return false;
     }
+
+
+    public int obtenerUltimoIdVenta() {
+        int id = 0;
+        String sql = "SELECT MAX(idVenta) AS idVenta FROM venta";
+
+        try (Connection con = Conexion.getConexion();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                id = rs.getInt("idVenta");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error al obtener último ID de venta: " + e.getMessage());
+        }
+
+        return id;
+    }
+
 }
