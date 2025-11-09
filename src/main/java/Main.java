@@ -1,37 +1,12 @@
-import Controlador.AdministradorController;
-import Datos.*;
-import Dominio.*;
-import Servicio.AdministradorService;
-import Servicio.MedicamentoService;
+import Vista.LoginForm;
 
-import java.time.LocalDate;
-import java.util.List;
+import javax.swing.*;
 
 public class Main {
     public static void main(String[] args) {
-
-
-
-
-
-        IMedicamentoDAO medDao = new MedicamentoDAO();
-        MedicamentoService medService = new MedicamentoService(medDao);
-        AdministradorService adminService = new AdministradorService(medService);
-        AdministradorController adminController = new AdministradorController(adminService);
-
-// Simulamos un administrador logueado
-        Administrador admin = new Administrador();
-
-// Buscar por nombre
-
-
-
-
-
-
-
-
-
-
+        SwingUtilities.invokeLater(() -> {
+            LoginForm login = new LoginForm();
+            login.setVisible(true);
+        });
     }
 }
