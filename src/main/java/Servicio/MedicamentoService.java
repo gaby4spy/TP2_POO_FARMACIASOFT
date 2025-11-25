@@ -26,6 +26,7 @@ public class MedicamentoService {
     }
 
     public boolean modificarMedicamento(Medicamento medicamento , int stockNuevo){
+
         return  medicamentoDAO.modificarMedicamento(medicamento,stockNuevo);
     }
     public boolean agregarMedicamento(Medicamento medicamento){

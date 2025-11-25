@@ -4,21 +4,23 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
-public class Administrador extends JFrame {
+public class EmpleadoPanel extends JFrame {
     private JPanel mainPanel;
-    private JButton medicamentosButton;
+    private JButton buscarMedicamentoButton;
+    private JButton registrarClienteButton;
     private JButton salirButton;
     private JLabel tituloLabel;
 
-    public Administrador() {
+    public EmpleadoPanel() {
         $$$setupUI$$$();
         setContentPane(mainPanel);
-        setTitle("FarmaciaSoft - Panel de Administrador");
+        setTitle("FarmaciaSoft - Panel de Empleado");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(600, 500);
+        setSize(500, 400);
         setLocationRelativeTo(null);
 
-        medicamentosButton.addActionListener(this::medicamentosButtonActionPerformed);
+        buscarMedicamentoButton.addActionListener(this::buscarMedicamentoButtonActionPerformed);
+        registrarClienteButton.addActionListener(this::registrarClienteButtonActionPerformed);
         salirButton.addActionListener(this::salirButtonActionPerformed);
     }
 
@@ -30,7 +32,7 @@ public class Administrador extends JFrame {
 
         tituloLabel = new JLabel();
         tituloLabel.setFont(new Font("Arial", Font.BOLD, 20));
-        tituloLabel.setText("Panel de Administrador");
+        tituloLabel.setText("Panel de Empleado");
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
@@ -44,28 +46,40 @@ public class Administrador extends JFrame {
         gbc.weighty = 1.0;
         mainPanel.add(new JPanel(), gbc);
 
-        medicamentosButton = new JButton();
-        medicamentosButton.setFont(new Font("Arial", Font.PLAIN, 14));
-        medicamentosButton.setText("Gestionar Medicamentos");
-        medicamentosButton.setPreferredSize(new Dimension(250, 50));
+        buscarMedicamentoButton = new JButton();
+        buscarMedicamentoButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        buscarMedicamentoButton.setText("Buscar Medicamentos");
+        buscarMedicamentoButton.setPreferredSize(new Dimension(200, 50));
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weighty = 0;
-        mainPanel.add(medicamentosButton, gbc);
+        mainPanel.add(buscarMedicamentoButton, gbc);
+
+        registrarClienteButton = new JButton();
+        registrarClienteButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        registrarClienteButton.setText("Registrar Cliente");
+        registrarClienteButton.setPreferredSize(new Dimension(200, 50));
+        gbc.gridy = 3;
+        mainPanel.add(registrarClienteButton, gbc);
 
         salirButton = new JButton();
         salirButton.setFont(new Font("Arial", Font.PLAIN, 14));
         salirButton.setText("Salir");
-        salirButton.setPreferredSize(new Dimension(250, 50));
-        gbc.gridy = 3;
+        salirButton.setPreferredSize(new Dimension(200, 50));
+        gbc.gridy = 4;
         mainPanel.add(salirButton, gbc);
     }
 
-    private void medicamentosButtonActionPerformed(ActionEvent e) {
-        MedicamentoForm medicamentoForm = new MedicamentoForm();
-        medicamentoForm.setVisible(true);
+    private void buscarMedicamentoButtonActionPerformed(ActionEvent e) {
+        BuscarMedicamentoForm buscarForm = new BuscarMedicamentoForm();
+        buscarForm.setVisible(true);
+    }
+
+    private void registrarClienteButtonActionPerformed(ActionEvent e) {
+        RegistroClienteForm registroForm = new RegistroClienteForm();
+        registroForm.setVisible(true);
     }
 
     private void salirButtonActionPerformed(ActionEvent e) {
@@ -80,12 +94,5 @@ public class Administrador extends JFrame {
             login.setVisible(true);
             dispose();
         }
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            Administrador admin = new Administrador();
-            admin.setVisible(true);
-        });
     }
 }

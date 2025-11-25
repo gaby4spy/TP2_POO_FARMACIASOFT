@@ -14,7 +14,7 @@ public class ProveedorDAO implements IProveedorDAO {
     @Override
     public List<Proveedor> listarProveedores() {
         List<Proveedor> proveedores = new ArrayList<>();
-        String sql = "SELECT * FROM Proveedor";
+        String sql = "SELECT * FROM Proveedor WHERE estado = 'A'"; // Solo proveedores activos
 
         try (Connection con = Conexion.getConexion();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -26,6 +26,9 @@ public class ProveedorDAO implements IProveedorDAO {
                 proveedor.setRazonSocial(rs.getString("razonSocial"));
                 proveedor.setDni(rs.getString("dni"));
                 proveedor.setTelefono(rs.getString("telefono"));
+                // Si querés guardar el estado también
+                proveedor.setEstado(rs.getString("estado").charAt(0));
+
                 proveedores.add(proveedor);
             }
 
@@ -48,6 +51,7 @@ public class ProveedorDAO implements IProveedorDAO {
                     proveedor.setRazonSocial(rs.getString("razonSocial"));
                     proveedor.setDni(rs.getString("dni"));
                     proveedor.setTelefono(rs.getString("telefono"));
+                    proveedor.setEstado(rs.getString("estado").charAt(0));
                     return true;
                 }
             }
@@ -60,6 +64,7 @@ public class ProveedorDAO implements IProveedorDAO {
 
     @Override
     public boolean agregarProveedor(Proveedor proveedor) {
+        // No se incluye 'estado' porque la BD lo setea por defecto en 'A'
         String sql = "INSERT INTO Proveedor(idProveedor, razonSocial, dni, telefono) VALUES (?, ?, ?, ?)";
 
         try (Connection con = Conexion.getConexion();
@@ -100,7 +105,8 @@ public class ProveedorDAO implements IProveedorDAO {
 
     @Override
     public boolean eliminarProveedor(Proveedor proveedor) {
-        String sql = "DELETE FROM Proveedor WHERE idProveedor = ?";
+        // Eliminación lógica → cambia estado de 'A' a 'I'
+        String sql = "UPDATE Proveedor SET estado = 'I' WHERE idProveedor = ?";
 
         try (Connection con = Conexion.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -110,7 +116,7 @@ public class ProveedorDAO implements IProveedorDAO {
             return true;
 
         } catch (Exception e) {
-            System.out.println("Error al eliminar proveedor: " + e.getMessage());
+            System.out.println("Error al eliminar proveedor (eliminación lógica): " + e.getMessage());
         }
         return false;
     }
