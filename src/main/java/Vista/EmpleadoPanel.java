@@ -7,6 +7,7 @@ import java.awt.event.ActionEvent;
 public class EmpleadoPanel extends JFrame {
     private JPanel mainPanel;
     private JButton buscarMedicamentoButton;
+    private JButton registrarClienteButton;
     private JButton salirButton;
     private JLabel tituloLabel;
 
@@ -19,6 +20,7 @@ public class EmpleadoPanel extends JFrame {
         setLocationRelativeTo(null);
 
         buscarMedicamentoButton.addActionListener(this::buscarMedicamentoButtonActionPerformed);
+        registrarClienteButton.addActionListener(this::registrarClienteButtonActionPerformed);
         salirButton.addActionListener(this::salirButtonActionPerformed);
     }
 
@@ -55,17 +57,29 @@ public class EmpleadoPanel extends JFrame {
         gbc.weighty = 0;
         mainPanel.add(buscarMedicamentoButton, gbc);
 
+        registrarClienteButton = new JButton();
+        registrarClienteButton.setFont(new Font("Arial", Font.PLAIN, 14));
+        registrarClienteButton.setText("Registrar Cliente");
+        registrarClienteButton.setPreferredSize(new Dimension(200, 50));
+        gbc.gridy = 3;
+        mainPanel.add(registrarClienteButton, gbc);
+
         salirButton = new JButton();
         salirButton.setFont(new Font("Arial", Font.PLAIN, 14));
         salirButton.setText("Salir");
         salirButton.setPreferredSize(new Dimension(200, 50));
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         mainPanel.add(salirButton, gbc);
     }
 
     private void buscarMedicamentoButtonActionPerformed(ActionEvent e) {
         BuscarMedicamentoForm buscarForm = new BuscarMedicamentoForm();
         buscarForm.setVisible(true);
+    }
+
+    private void registrarClienteButtonActionPerformed(ActionEvent e) {
+        RegistroClienteForm registroForm = new RegistroClienteForm();
+        registroForm.setVisible(true);
     }
 
     private void salirButtonActionPerformed(ActionEvent e) {

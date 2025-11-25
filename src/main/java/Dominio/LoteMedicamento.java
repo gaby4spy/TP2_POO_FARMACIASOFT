@@ -106,4 +106,18 @@ public class LoteMedicamento {
     public void setProveedor(Proveedor proveedor) {
         this.proveedor = proveedor;
     }
+
+    @Override
+    public String toString() {
+        return "LoteMedicamento{" +
+                "idCompra=" + idCompra +
+                ", fechaCompra=" + fechaCompra +
+                ", lote='" + lote + '\'' +
+                ", fechaVencimiento=" + fechaVencimiento +
+                ", cantidadAdquirida=" + cantidadAdquirida +
+                ", laboratorio='" + laboratorio + '\'' +
+                ", medicamento=" + medicamento +
+                ", proveedor=" + proveedor +
+                '}';
+    }
 }

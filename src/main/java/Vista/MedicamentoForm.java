@@ -101,6 +101,7 @@ public class MedicamentoForm extends JFrame {
             float precio = Float.parseFloat(precioTextField.getText().trim());
             int stock = Integer.parseInt(stockTextField.getText().trim());
 
+
             Medicamento medicamento = new Medicamento(id, nombre, descripcion, precio, stock);
             controller.agregarMedicamento(new Administrador(), medicamento);
             JOptionPane.showMessageDialog(this, "Medicamento agregado correctamente");

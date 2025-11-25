@@ -71,7 +71,7 @@ public class MedicamentoDAO implements IMedicamentoDAO {
 
     @Override
     public boolean agregarMedicamento(Medicamento medicamento) {
-        String sql = "INSERT INTO Medicamento (idMedicamento, nombre, descripcion, precio, stockTotal, categoria) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Medicamento (idMedicamento, nombre, descripcion, precio, stockTotal) VALUES (?, ?, ?, ?, ?)";
 
         try (Connection con = Conexion.getConexion();
              PreparedStatement ps = con.prepareStatement(sql)) {

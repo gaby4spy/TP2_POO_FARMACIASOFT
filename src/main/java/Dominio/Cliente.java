@@ -6,15 +6,25 @@ public class Cliente {
     private String dni;
     private String  telefono;
 
+
+
     public Cliente (){};
+
+    //busqueda / eliminacion
     public Cliente (int id){
         this.id=id;
     };
+
+    //insercion
     public Cliente (String nombre ,String dni,String telefono){
         this.nombre=nombre;
         this.dni=dni;
         this.telefono=telefono;
     };
+
+
+
+    //recuperacion
     public Cliente (int id,String nombre,String dni ,String telefono){
         this(nombre,dni,telefono);
         this.id=id;

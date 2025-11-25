@@ -12,6 +12,7 @@ public class Conexion {
         var usuario="root";
         var password ="admin123";
 
+
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             conexion= DriverManager.getConnection(url,usuario,password);
@@ -22,4 +23,6 @@ public class Conexion {
 
         return conexion;
     }
+
+
 }
